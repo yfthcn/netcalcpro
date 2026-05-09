@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NetCalc Pro — Network Engineering Toolkit</title>
+  <meta name="description" content="Free, vendor-free network engineering toolkit: subnet, VLSM, supernet, wildcard, IPv6, DHCP Option 43, OSPF/EIGRP metrics. Zero dependencies, runs entirely in your browser.">
+  <meta name="keywords" content="subnet calculator, VLSM, CIDR, IPv6, DHCP option 43, Cisco WLC, OSPF, EIGRP, network engineering, CCNA, CCNP">
+  <meta name="author" content="yfthcn">
+  <meta name="theme-color" content="#0A0E14">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="NetCalc Pro — Network Engineering Toolkit">
+  <meta property="og:description" content="15-module network calculator: subnet, VLSM, IPv6, DHCP Option 43, OSPF/EIGRP. Vendor-free, dependency-free, mobile-responsive.">
+  <meta property="og:url" content="https://yfthcn.github.io/netcalcpro/">
+  <meta property="og:site_name" content="NetCalc Pro">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="NetCalc Pro — Network Engineering Toolkit">
+  <meta name="twitter:description" content="Vendor-free network calculator. Subnet, VLSM, IPv6, Option 43, OSPF/EIGRP. Runs in your browser.">
+
+  <!-- Favicon (inline SVG) -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%230A0E14'/%3E%3Crect x='6' y='6' width='20' height='20' rx='2' fill='none' stroke='%231BA0D7' stroke-width='2'/%3E%3Cline x1='10' y1='16' x2='22' y2='16' stroke='%231BA0D7' stroke-width='2' transform='rotate(-45 16 16)'/%3E%3Cline x1='10' y1='16' x2='22' y2='16' stroke='%231BA0D7' stroke-width='2' transform='rotate(45 16 16)'/%3E%3C/svg%3E">
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ==================== TOPBAR ==================== -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark"></div>
+      <div>
+        <div class="brand-name">NET<span class="accent">CALC</span> PRO</div>
+      </div>
+      <div class="brand-tag">v2.2 · Network Toolkit</div>
+    </div>
+    <div class="topbar-actions">
+      <button class="share-btn" id="share-btn" type="button" title="Copy shareable link"><span>↗ Share</span></button>
+      <button class="theme-btn" id="theme-btn" type="button" title="Toggle theme">☀</button>
+      <button class="help-btn" id="help-btn" type="button" title="Keyboard shortcuts (?)">?</button>
+      <div class="status-dot">System Online</div>
+    </div>
+  </header>
+
+  <!-- ==================== APP LAYOUT ==================== -->
+  <div class="app">
+
+    <!-- ==================== SIDEBAR ==================== -->
+    <aside class="sidebar">
+      <div class="sidebar-label">Modules</div>
+      <button class="tab-button active" data-tab="subnet">
+        <span class="tab-icon">⊟</span>Subnet Calc
+      </button>
+      <button class="tab-button" data-tab="vlsm">
+        <span class="tab-icon">⊞</span>VLSM
+      </button>
+      <button class="tab-button" data-tab="supernet">
+        <span class="tab-icon">⇡</span>Supernet
+      </button>
+      <button class="tab-button" data-tab="split">
+        <span class="tab-icon">⊟⊟</span>Split Subnet
+      </button>
+      <button class="tab-button" data-tab="wildcard">
+        <span class="tab-icon">∗</span>Wildcard
+      </button>
+      <button class="tab-button" data-tab="ipv6">
+        <span class="tab-icon">v6</span>IPv6
+      </button>
+      <button class="tab-button" data-tab="opt43">
+        <span class="tab-icon">43</span>Option 43
+      </button>
+      <button class="tab-button" data-tab="overlap">
+        <span class="tab-icon">⊕</span>Overlap
+      </button>
+      <button class="tab-button" data-tab="numbase">
+        <span class="tab-icon">10</span>Base Convert
+      </button>
+      <div class="sidebar-divider"></div>
+      <button class="tab-button" data-tab="ospf">
+        <span class="tab-icon">∑</span>OSPF Cost
+      </button>
+      <button class="tab-button" data-tab="eigrp">
+        <span class="tab-icon">∏</span>EIGRP Metric
+      </button>
+      <button class="tab-button" data-tab="cidrange">
+        <span class="tab-icon">↔</span>Range ↔ CIDR
+      </button>
+      <button class="tab-button" data-tab="pingsweep">
+        <span class="tab-icon">⫶</span>Ping Sweep
+      </button>
+      <button class="tab-button" data-tab="ptr">
+        <span class="tab-icon">↺</span>Reverse DNS
+      </button>
+      <div class="sidebar-divider"></div>
+      <button class="tab-button" data-tab="references">
+        <span class="tab-icon">§</span>References
+      </button>
+    </aside>
+
+    <!-- ==================== CONTENT ==================== -->
+    <main class="content">
+
+      <!-- ========== SUBNET CALCULATOR ========== -->
+      <section class="tab-panel active" id="tab-subnet">
+        <div class="panel-header">
+          <div class="panel-title">Subnet Calculator</div>
+          <div class="panel-subtitle">Calculate network/broadcast/host range from an IPv4 address and CIDR.</div>
+        </div>
+
+        <form class="calc-form" id="subnet-form">
+        <div class="input-group">
+          <div class="field">
+            <label class="field-label">IPv4 Address</label>
+            <input type="text" class="input" id="subnet-ip" placeholder="192.168.1.100" autocomplete="off">
+          </div>
+          <div class="field">
+            <label class="field-label">CIDR</label>
+            <input type="number" class="input input-cidr" id="subnet-cidr" min="0" max="32" placeholder="24">
+          </div>
+          <div class="field">
+            <label class="field-label">Quick Mask</label>
+            <select class="input input-small" id="subnet-mask-quick">
+              <option value="">— select —</option>
+              <option value="8">/8 — 255.0.0.0</option>
+              <option value="16">/16 — 255.255.0.0</option>
+              <option value="20">/20 — 255.255.240.0</option>
+              <option value="22">/22 — 255.255.252.0</option>
+              <option value="23">/23 — 255.255.254.0</option>
+              <option value="24">/24 — 255.255.255.0</option>
+              <option value="25">/25 — 255.255.255.128</option>
+              <option value="26">/26 — 255.255.255.192</option>
+              <option value="27">/27 — 255.255.255.224</option>
+              <option value="28">/28 — 255.255.255.240</option>
+              <option value="29">/29 — 255.255.255.248</option>
+              <option value="30">/30 — 255.255.255.252</option>
+              <option value="31">/31 — P2P</option>
+              <option value="32">/32 — Host</option>
+            </select>
+          </div>
+          <button class="btn" type="submit" id="subnet-calc-btn">Calculate</button>
+        </div>
+        </form>
+        <div class="hint">Tip: <code>192.168.1.0/24</code> format is auto-parsed when pasted.</div>
+        <div class="error-message" id="subnet-error"></div>
+
+        <div id="subnet-output" style="margin-top: 20px;"></div>
+
+        <div class="reference-block">
+          <div class="reference-block-title">Reference</div>
+          <div class="reference-block-text">
+            Given an IPv4 address and <strong>CIDR prefix</strong>, calculates subnet boundaries:
+            network address, broadcast, first/last host, and total address count.
+            <code>/31</code> is treated specially per RFC 3021 for point-to-point links (2 usable addresses),
+            and <code>/32</code> as a host route. Network bits highlighted in blue, host bits in orange.
+          </div>
+          <div class="reference-links">
+            <a class="reference-link" href="https://datatracker.ietf.org/doc/html/rfc1878" target="_blank" rel="noopener">RFC 1878 <span class="tag">VLSM</span></a>
+            <a class="reference-link" href="https://datatracker.ietf.org/doc/html/rfc3021" target="_blank" rel="noopener">RFC 3021 <span class="tag">/31</span></a>
+            <a class="reference-link" href="https://datatracker.ietf.org/doc/html/rfc1918" target="_blank" rel="noopener">RFC 1918 <span class="tag">Private</span></a>
+            <a class="reference-link" href="https://datatracker.ietf.org/doc/html/rfc6598" target="_blank" rel="noopener">RFC 6598 <span class="tag">CGNAT</span></a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== VLSM ========== -->
+      <section class="tab-panel" id="tab-vlsm">
+        <div class="panel-header">
+          <div class="panel-title">VLSM — Variable Length Subnet Masking</div>
+          <div class="panel-subtitle">Divide a parent network into subnets sized to varying host requirements.</div>
+        </div>
+
+        <form class="calc-form" id="vlsm-form">
+        <div class="input-group">
+          <div class="field">
+            <label class="field-label">Parent IP</label>
+            <input type="text" class="input" id="vlsm-parent-ip" placeholder="192.168.10.0">
+          </div>
+          <div class="field">
+            <label class="field-label">Parent CIDR</label>
+            <input type="number" class="input input-cidr" id="vlsm-parent-cidr" min="0" max="30">
+          </div>
+        </div>
+
+        <div class="vlsm-requirements" id="vlsm-requirements">
+          <div style="display: grid; grid-template-columns: 1fr 140px 40px; gap: 10px; margin-bottom: 10px;">
+            <div class="field-label">Subnet Name</div>
+            <div class="field-label">Hosts Required</div>
+            <div></div>
+          </div>
+        </div>
+
+        <div class="vlsm-add">
+          <button class="btn btn-secondary" type="button" id="vlsm-add-btn">+ Add Subnet</button>
+          <button class="btn" type="submit" id="vlsm-calc-btn">Calculate VLSM</button>
+        </div>
+        </form>
+        <div class="error-message" id="vlsm-error"></div>
+
+        <div id="vlsm-output" style="margin-top: 24px;"></div>
+
+        <div class="reference-block">
+          <div class="reference-block-title">Reference</div>
+          <div class="reference-block-text">
+            <strong>VLSM (Variable Length Subnet Masking)</strong> divides a parent network into
+            variable-sized subnets according to host requirements. Algorithm: requirements are sorted
+            from largest to smallest; for each one the smallest prefix satisfying
+            <code>2^(32-cidr) − 2 ≥ hosts</code> is selected and placed on a block boundary, contiguously.
+          </div>
+          <div class="reference-links">
+            <a class="reference-link" href="https://datatracker.ietf.org/doc/html/rfc1878" target="_blank" rel="noopener">RFC 1878 <span class="tag">Subnet</span></a>
+            <a class="reference-link" href="https://datatracker.ietf.org/doc/html/rfc1812" target="_blank" rel="noopener">RFC 1812 <span class="tag">Routers</span></a>
+            <a class="reference-link" href="https://www.cisco.com/c/en/us/support/docs/ip/dynamic-address-allocation-resolution/13788-3.html" target="_blank" rel="noopener">Cisco VLSM Guide</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== SUPERNET ========== -->
+      <section class="tab-panel" id="tab-supernet">
+        <div class="panel-header">
+          <div class="panel-title">Supernet / Route Summarization</div>
+          <div class="panel-subtitle">Find the smallest summary route covering multiple networks.</div>
+        </div>
+
+        <form class="calc-form" id="supernet-form">
+        <div class="field" style="margin-bottom: 12px;">
+          <label class="field-label">Networks (one per line, CIDR notation)</label>
+          <textarea class="textarea-input" id="supernet-input" placeholder="192.168.0.0/24&#10;192.168.1.0/24&#10;192.168.2.0/24&#10;192.168.3.0/24"></textarea>
+        </div>
+        <div class="hint">Format: <code>10.1.0.0/16</code> — one network per line.</div>
+
+        <div style="margin-top: 16px;">
+          <button class="btn" type="submit" id="supernet-calc-btn">Summarize</button>
+        </div>
+        </form>
+        <div class="error-message" id="supernet-error"></div>
+
+        <div id="supernet-output" style="margin-top: 24px;"></div>
+
+        <div class="reference-block">
+          <div class="reference-block-title">Reference</div>
+          <div class="reference-block-text">
+            <strong>Route summarization (supernetting)</strong> represents multiple contiguous networks
+            with a single summarized route. Reduces routing table size and update traffic.
+            Algorithm: identifies the <strong>common high-order bits</strong> across all start and end
+            addresses to compute the smallest covering prefix. <strong>CIDR (RFC 4632)</strong> is the
+            foundation of classless addressing.
+          </div>
+          <div class="reference-links">
+            <a class="reference-link" href="https://datatracker.ietf.org/doc/html/rfc4632" target="_blank" rel="noopener">RFC 4632 <span class="tag">CIDR</span></a>
+            <a class="reference-link" href="https://datatracker.ietf.org/doc/html/rfc1519" target="_blank" rel="noopener">RFC 1519 <span class="tag">Aggregation</span></a>
+            <a class="reference-link" href="https://www.cisco.com/c/en/us/support/docs/ip/border-gateway-protocol-bgp/26634-bgp-toc.html" target="_blank" rel="noopener">Cisco BGP Aggregation</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== SPLIT SUBNET ========== -->
+      <section class="tab-panel" id="tab-split">
+        <div class="panel-header">
+          <div class="panel-title">Subnet Splitter</div>
+          <div class="panel-subtitle">Split a parent network into equal-sized subnets.</div>
+        </div>
+
+        <form class="calc-form" id="split-form">
+        <div class="input-group">
+          <div class="field">
+            <label class="field-label">Network IP</label>
+            <input type="text" class="input" id="split-ip" placeholder="192.168.0.0">
+          </div>
+          <div class="field">
+            <label class="field-label">Parent /</label>
+            <input type="number" class="input input-cidr" id="split-parent-cidr" min="0" max="31">
+          </div>
+          <div class="field">
+            <label class="field-label">New /</label>
+            <input type="number" class="input input-cidr" id="split-new-cidr" min="1" max="32">
+          </div>
+          <button class="btn" type="submit" id="split-calc-btn">Split</button>
+        </div>
+        </form>
+        <div class="hint">e.g. split <code>/24</code> into <code>/26</code> → 4 subnets.</div>
+        <div class="error-message" id="split-error"></div>
+
+        <div id="split-output" style="margin-top: 24px;"></div>
+
+        <div class="reference-block">
+          <div class="reference-block-title">Reference</div>
+          <div class="reference-block-text">
+            Splits a parent network into <strong>equal-sized</strong> subnets.
+            Splitting <code>/24 → /26</code> produces 4 subnets
+            (<code>2^(26−24) = 4</code>). FLSM (Fixed Length Subnet Masking) approach —
+            all subnets share the same mask; simple but can waste addresses compared to VLSM.
+          </div>
+          <div class="reference-links">
+            <a class="reference-link" href="https://datatracker.ietf.org/doc/html/rfc950" target="_blank" rel="noopener">RFC 950 <span class="tag">Subnet</span></a>
+            <a class="reference-link" href="https://datatracker.ietf.org/doc/html/rfc1878" target="_blank" rel="noopener">RFC 1878</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== WILDCARD ========== -->
+      <section class="tab-panel" id="tab-wildcard">
+        <div class="panel-header">
+          <div class="panel-title">Wildcard Mask Calculator</div>
+          <div class="panel-subtitle">Inverse mask for Cisco ACL and OSPF/EIGRP network statements.</div>
+        </div>
+
+        <form class="calc-form" id="wildcard-form">
+        <div class="input-group">
+          <div class="field">
+            <label class="field-label">Network</label>
+            <input type="text" class="input" id="wildcard-ip" placeholder="10.0.0.0">
+          </div>
+          <div class="field">
+            <label class="field-label">CIDR</label>
+            <input type="number" class="input input-cidr" id="wildcard-cidr" min="0" max="32">
+          </div>
+          <button class="btn" type="submit" id="wildcard-calc-btn">Calculate</button>
+        </div>
+        </form>
+        <div class="error-message" id="wildcard-error"></div>
+
+        <div id="wildcard-output" style="margin-top: 24px;"></div>
+
+        <div class="reference-block">
+          <div class="reference-block-title">Reference</div>
+          <div class="reference-block-text">
+            A <strong>wildcard mask</strong> is the bitwise inverse of a subnet mask
+            (<code>~mask</code>). Used in Cisco ACLs and OSPF/EIGRP <code>network</code>
+            statements: a <code>0</code> bit means "this position must match exactly",
+            a <code>1</code> bit means "this position is don't-care".
+            For a single host use <code>host X.X.X.X</code> or <code>X.X.X.X 0.0.0.0</code>.
+          </div>
+          <div class="reference-links">
+            <a class="reference-link" href="https://www.cisco.com/c/en/us/support/docs/security/ios-firewall/23602-confaccesslists.html" target="_blank" rel="noopener">Cisco ACL Guide</a>
+            <a class="reference-link" href="https://datatracker.ietf.org/doc/html/rfc2328" target="_blank" rel="noopener">RFC 2328 <span class="tag">OSPFv2</span></a>
+            <a class="reference-link" href="https://datatracker.ietf.org/doc/html/rfc7868" target="_blank" rel="noopener">RFC 7868 <span class="tag">EIGRP</span></a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== IPv6 ========== -->
+      <section class="tab-panel" id="tab-ipv6">
+        <div class="panel-header">
+          <div class="panel-title">IPv6 Calculator</div>
+          <div class="panel-subtitle">Network, prefix and type analysis on a 128-bit address.</div>
+        </div>
+
+        <form class="calc-form" id="ipv6-form">
+        <div class="input-group">
+          <div class="field">
+            <label class="field-label">IPv6 Address</label>
+            <input type="text" class="input" id="ipv6-addr" placeholder="2001:db8::1" style="min-width: 320px;">
+          </div>
+          <div class="field">
+            <label class="field-label">Prefix</label>
+            <input type="number" class="input input-cidr" id="ipv6-prefix" min="0" max="128" placeholder="64">
+          </div>
+          <button class="btn" type="submit" id="ipv6-calc-btn">Calculate</button>
+        </div>
+        </form>
+        <div class="hint">Applies RFC 5952 compression. <code>::</code>, <code>fe80::/10</code>, <code>2001:db8::/32</code> recognized.</div>
+        <div class="error-message" id="ipv6-error"></div>
+
+        <div id="ipv6-output" style="margin-top: 24px;"></div>
+
+        <div class="reference-block">
+          <div class="reference-block-title">Reference</div>
+          <div class="reference-block-text">
+            IPv6 addresses are <strong>128 bits</strong> long and normalized per <strong>RFC 5952</strong>
+            compression rules (longest run of zero groups replaced with <code>::</code>, leading zeros
+            dropped within groups). Type detection: GUA (<code>2000::/3</code>),
+            ULA (<code>fc00::/7</code>), link-local (<code>fe80::/10</code>),
+            multicast (<code>ff00::/8</code>), documentation (<code>2001:db8::/32</code>).
+            IPv6 has no broadcast — multicast and anycast are used instead.
+          </div>
+          <div class="reference-links">
+            <a class="reference-link" href="https://datatracker.ietf.org/doc/html/rfc4291" target="_blank" rel="noopener">RFC 4291 <span class="tag">Architecture</span></a>
+            <a class="reference-link" href="https://datatracker.ietf.org/doc/html/rfc5952" target="_blank" rel="noopener">RFC 5952 <span class="tag">Format</span></a>
+            <a class="reference-link" href="https://datatracker.ietf.org/doc/html/rfc4193" target="_blank" rel="noopener">RFC 4193 <span class="tag">ULA</span></a>
+            <a class="reference-link" href="https://datatracker.ietf.org/doc/html/rfc3849" target="_blank" rel="noopener">RFC 3849 <span class="tag">2001:db8</span></a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== OPTION 43 ========== -->
+      <section class="tab-panel" id="tab-opt43">
+        <div class="panel-header">
+          <div class="panel-title">DHCP Option 43 Generator</div>
+          <div class="panel-subtitle">Generate hex string sent to APs for WLC discovery. Cisco WLC and Ruckus supported.</div>
+        </div>
+
+        <div class="mode-toggle" id="opt43-mode-toggle">
+          <button class="mode-btn active" data-mode="encode">Encode (IP → Hex)</button>
+          <button class="mode-btn" data-mode="decode">Decode (Hex → IP)</button>
+        </div>
+
+        <div id="opt43-encode" class="opt43-pane">
+          <form class="calc-form" id="opt43-encode-form">
+          <div class="input-group">
+            <div class="field" style="flex: 1; min-width: 250px;">
+              <label class="field-label">Vendor</label>
+              <select class="input" id="opt43-vendor">
+                <option value="cisco">Cisco WLC / Catalyst (type 0xf1)</option>
+                <option value="ruckus_zd">Ruckus ZoneDirector (type 0x06)</option>
+                <option value="ruckus_scg">Ruckus SmartZone / SCG (type 0x03)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field" style="margin-bottom: 12px;">
+            <label class="field-label">Controller IP Addresses (one per line, or comma/space separated)</label>
+            <textarea class="textarea-input" id="opt43-ips" placeholder="192.168.1.10&#10;192.168.1.11"></textarea>
+          </div>
+          <div class="hint">Add 2-3 WLCs for high availability. Maximum 16 IPs.</div>
+
+          <div id="opt43-fom-section">
+            <div class="fom-block">
+              <label class="fom-checkbox">
+                <input type="checkbox" id="opt43-fom-toggle">
+                <span class="fom-toggle-label">
+                  <strong>Enable Fast Offline Migration (FOM)</strong>
+                  <span class="fom-hint">Wi-Fi 7 / Universal APs only (CW9176I, CW9178I, CW9179F, etc.) — skips the 8-15 min Meraki wait period</span>
+                </span>
+              </label>
+
+              <div class="fom-mode-toggle" id="opt43-fom-mode-wrap" style="display: none;">
+                <span class="fom-mode-label">Mode:</span>
+                <label class="fom-radio">
+                  <input type="radio" name="fom-mode" value="catalyst" checked>
+                  <span>Catalyst (on-prem WLC)</span>
+                </label>
+                <label class="fom-radio">
+                  <input type="radio" name="fom-mode" value="meraki">
+                  <span>Meraki (Cloud)</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 14px;">
+            <button class="btn" type="submit" id="opt43-gen-btn">Generate Option 43</button>
+          </div>
+          </form>
+          <div class="error-message" id="opt43-error"></div>
+          <div id="opt43-output" style="margin-top: 24px;"></div>
+        </div>
+
+        <div id="opt43-decode" class="opt43-pane" style="display:none;">
+          <form class="calc-form" id="opt43-decode-form">
+          <div class="field" style="margin-bottom: 12px;">
+            <label class="field-label">Hex String (any format accepted)</label>
+            <input type="text" class="input" id="opt43-hex" placeholder="f104.c0a8.010a  or  f1:04:c0:a8:01:0a">
+          </div>
+          <div class="hint">Spaces, colons, dashes, dots, [brackets] accepted.</div>
+          <div style="margin-top: 14px;">
+            <button class="btn" type="submit" id="opt43-dec-btn">Decode</button>
+          </div>
+          </form>
+          <div class="error-message" id="opt43-decode-error"></div>
+          <div id="opt43-decode-output" style="margin-top: 24px;"></div>
+        </div>
+
+        <div class="reference-block">
+          <div class="reference-block-title">Reference</div>
+          <div class="reference-block-text">
+            <strong>DHCP Option 43</strong> (RFC 2132 — Vendor-Specific Information) is used by
+            APs to discover a WLC on a different subnet. Format:
+            <strong>TLV (Type-Length-Value)</strong>. For Cisco <code>type=0xf1</code>,
+            for Ruckus ZD <code>0x06</code>, for Ruckus SmartZone <code>0x03</code>.
+            <code>length</code> = number of WLC IPs × 4 (each IPv4 = 4 bytes).
+            Multiple controller IPs can be added for HA.
+          </div>
+          <div class="reference-links">
+            <a class="reference-link" href="https://datatracker.ietf.org/doc/html/rfc2132" target="_blank" rel="noopener">RFC 2132 <span class="tag">DHCP</span></a>
+            <a class="reference-link" href="https://www.cisco.com/c/en/us/support/docs/wireless-mobility/wireless-lan-wlan/97066-dhcp-option-43-00.html" target="_blank" rel="noopener">Cisco Doc 97066 <span class="tag">WLC</span></a>
+            <a class="reference-link" href="https://datatracker.ietf.org/doc/html/rfc3925" target="_blank" rel="noopener">RFC 3925 <span class="tag">VIVSO</span></a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== SUBNET OVERLAP DETECTOR ========== -->
+      <section class="tab-panel" id="tab-overlap">
+        <div class="panel-header">
+          <div class="panel-title">Subnet Overlap Detector</div>
+          <div class="panel-subtitle">Enter multiple CIDRs to detect overlapping/containing networks. Critical for ACL and routing planning.</div>
+        </div>
+
+        <form class="calc-form" id="overlap-form">
+        <div class="field" style="margin-bottom: 12px;">
+          <label class="field-label">Networks (one per line)</label>
+          <textarea class="textarea-input" id="overlap-input" placeholder="192.168.1.0/24&#10;192.168.1.128/25&#10;10.0.0.0/8&#10;10.5.0.0/16"></textarea>
+        </div>
+        <div class="hint">CIDR notation required. Compares every network pair.</div>
+
+        <div style="margin-top: 14px;">
+          <button class="btn" type="submit" id="overlap-calc-btn">Detect Overlaps</button>
+        </div>
+        </form>
+        <div class="error-message" id="overlap-error"></div>
+        <div id="overlap-output" style="margin-top: 24px;"></div>
+
+        <div class="reference-block">
+          <div class="reference-block-title">Reference</div>
+          <div class="reference-block-text">
+            Detects overlap between two subnets via <strong>integer range comparison</strong>:
+            if <code>A_start ≤ B_end</code> and <code>B_start ≤ A_end</code>, they overlap.
+            Relationship types: <strong>identical</strong> (same range),
+            <strong>contains</strong> (one wholly contains the other),
+            <strong>partial</strong> (rare for valid CIDRs — usually shows as containment).
+            Critical for production planning and summary route safety.
+          </div>
+          <div class="reference-links">
+            <a class="reference-link" href="https://datatracker.ietf.org/doc/html/rfc4632" target="_blank" rel="noopener">RFC 4632 <span class="tag">CIDR</span></a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== NUMBER BASE CONVERTER ========== -->
+      <section class="tab-panel" id="tab-numbase">
+        <div class="panel-header">
+          <div class="panel-title">Number Base Converter</div>
+          <div class="panel-subtitle">Convert between Decimal, Hex, Binary, Octal. For network engineering: MAC addresses, hex values, ACL bit calculations.</div>
+        </div>
+
+        <div class="numbase-grid">
+          <div class="field numbase-field">
+            <label class="field-label">Decimal</label>
+            <input type="text" class="input numbase-input" id="num-dec" placeholder="42" data-base="10">
+          </div>
+          <div class="field numbase-field">
+            <label class="field-label">Hexadecimal</label>
+            <input type="text" class="input numbase-input" id="num-hex" placeholder="0x2A" data-base="16">
+          </div>
+          <div class="field numbase-field">
+            <label class="field-label">Binary</label>
+            <input type="text" class="input numbase-input" id="num-bin" placeholder="0b101010" data-base="2">
+          </div>
+          <div class="field numbase-field">
+            <label class="field-label">Octal</label>
+            <input type="text" class="input numbase-input" id="num-oct" placeholder="0o52" data-base="8">
+          </div>
+        </div>
+
+        <div class="error-message" id="numbase-error"></div>
+        <div id="numbase-output" style="margin-top: 24px;"></div>
+
+        <div class="reference-block">
+          <div class="reference-block-title">Reference</div>
+          <div class="reference-block-text">
+            Common conversions in networking: subnet mask binary analysis, MAC addresses (hex),
+            ACL bit math, OSPF/BGP timers (decimal). Hex prefix <code>0x</code>, binary <code>0b</code>,
+            octal <code>0o</code> are accepted but optional. Uses <strong>BigInt</strong>,
+            so there is no 32-bit limit — even 128-bit IPv6 values can be converted.
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== OSPF COST ========== -->
+      <section class="tab-panel" id="tab-ospf">
+        <div class="panel-header">
+          <div class="panel-title">OSPF Cost Calculator</div>
+          <div class="panel-subtitle">Reference bandwidth / interface bandwidth — OSPF cost calculation.</div>
+        </div>
+
+        <form class="calc-form" id="ospf-form">
+        <div class="input-group">
+          <div class="field">
+            <label class="field-label">Interface Bandwidth (Mbps)</label>
+            <input type="number" class="input" id="ospf-iface-bw" min="0.001" step="any" value="100">
+          </div>
+          <div class="field">
+            <label class="field-label">Reference Bandwidth (Mbps)</label>
+            <select class="input" id="ospf-ref-bw">
+              <option value="100">100 (default Cisco)</option>
+              <option value="1000">1000 (1 Gbps)</option>
+              <option value="10000">10000 (10 Gbps)</option>
+              <option value="100000" selected>100000 (100 Gbps — modern)</option>
+              <option value="custom">Custom...</option>
+            </select>
+          </div>
+          <div class="field" id="ospf-custom-wrap" style="display:none;">
+            <label class="field-label">Custom Ref BW</label>
+            <input type="number" class="input input-small" id="ospf-custom-ref" min="1" value="100000">
+          </div>
+          <button class="btn" type="submit" id="ospf-calc-btn">Calculate</button>
+        </div>
+        </form>
+        <div class="error-message" id="ospf-error"></div>
+        <div id="ospf-output" style="margin-top: 20px;"></div>
+
+        <div class="reference-block">
+          <div class="reference-block-title">Reference</div>
+          <div class="reference-block-text">
+            <strong>OSPF Cost = Reference BW / Interface BW</strong>. Minimum cost is <strong>1</strong>.
+            Cisco default reference is 100 Mbps — too low for modern links (1G and 10G both yield cost=1).
+            For larger networks, raise it to 100 Gbps with <code>auto-cost reference-bandwidth 100000</code>.
+            Manual override: <code>ip ospf cost &lt;1-65535&gt;</code>.
+          </div>
+          <div class="reference-links">
+            <a class="reference-link" href="https://datatracker.ietf.org/doc/html/rfc2328" target="_blank" rel="noopener">RFC 2328 <span class="tag">OSPFv2</span></a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== EIGRP METRIC ========== -->
+      <section class="tab-panel" id="tab-eigrp">
+        <div class="panel-header">
+          <div class="panel-title">EIGRP Metric Calculator</div>
+          <div class="panel-subtitle">Composite metric: bandwidth + delay + (load + reliability + MTU). With K-values.</div>
+        </div>
+
+        <form class="calc-form" id="eigrp-form">
+        <div class="input-group">
+          <div class="field">
+            <label class="field-label">Bandwidth (kbps)</label>
+            <input type="number" class="input" id="eigrp-bw" min="1" value="100000">
+          </div>
+          <div class="field">
+            <label class="field-label">Delay (μs, sum)</label>
+            <input type="number" class="input" id="eigrp-delay" min="0" value="100">
+          </div>
+          <div class="field">
+            <label class="field-label">Load (1-255)</label>
+            <input type="number" class="input input-small" id="eigrp-load" min="1" max="255" value="1">
+          </div>
+          <div class="field">
+            <label class="field-label">Reliability (1-255)</label>
+            <input type="number" class="input input-small" id="eigrp-rel" min="1" max="255" value="255">
+          </div>
+          <div class="field">
+            <label class="field-label">MTU</label>
+            <input type="number" class="input input-small" id="eigrp-mtu" min="68" value="1500">
+          </div>
+        </div>
+
+        <div class="input-group">
+          <div class="field">
+            <label class="field-label">K1 (BW)</label>
+            <input type="number" class="input input-cidr" id="eigrp-k1" min="0" max="255" value="1">
+          </div>
+          <div class="field">
+            <label class="field-label">K2 (Load)</label>
+            <input type="number" class="input input-cidr" id="eigrp-k2" min="0" max="255" value="0">
+          </div>
+          <div class="field">
+            <label class="field-label">K3 (Delay)</label>
+            <input type="number" class="input input-cidr" id="eigrp-k3" min="0" max="255" value="1">
+          </div>
+          <div class="field">
+            <label class="field-label">K4 (Rel)</label>
+            <input type="number" class="input input-cidr" id="eigrp-k4" min="0" max="255" value="0">
+          </div>
+          <div class="field">
+            <label class="field-label">K5 (Rel)</label>
+            <input type="number" class="input input-cidr" id="eigrp-k5" min="0" max="255" value="0">
+          </div>
+          <button class="btn" type="submit" id="eigrp-calc-btn">Calculate</button>
+        </div>
+        </form>
+        <div class="error-message" id="eigrp-error"></div>
+        <div id="eigrp-output" style="margin-top: 20px;"></div>
+
+        <div class="reference-block">
+          <div class="reference-block-title">Reference</div>
+          <div class="reference-block-text">
+            <strong>Classic EIGRP metric:</strong> <code>(K1 × BW + K2×BW/(256-load) + K3×Delay) × (K5/(Reliability+K4))</code> × 256.
+            <code>BW = 10^7 / min_bw_kbps</code>, <code>Delay = sum_delay_μs / 10</code>. Default K-values:
+            K1=1, K3=1, others 0 — only BW and Delay are effective. When K4/K5=0 the reliability factor is not applied.
+            On Cisco IOS the metric is shown by <code>show ip eigrp topology</code>.
+          </div>
+          <div class="reference-links">
+            <a class="reference-link" href="https://datatracker.ietf.org/doc/html/rfc7868" target="_blank" rel="noopener">RFC 7868 <span class="tag">EIGRP</span></a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== IP RANGE ↔ CIDR ========== -->
+      <section class="tab-panel" id="tab-cidrange">
+        <div class="panel-header">
+          <div class="panel-title">IP Range ↔ CIDR Converter</div>
+          <div class="panel-subtitle">Convert IP range to minimum CIDR blocks or vice versa. For firewall ACL planning.</div>
+        </div>
+
+        <div class="mode-toggle" id="cidrange-mode-toggle">
+          <button class="mode-btn active" data-mode="r2c">Range → CIDR</button>
+          <button class="mode-btn" data-mode="c2r">CIDR → Range</button>
+        </div>
+
+        <div id="cidrange-r2c">
+          <form class="calc-form" id="cidrange-r2c-form">
+          <div class="input-group">
+            <div class="field">
+              <label class="field-label">Start IP</label>
+              <input type="text" class="input" id="cidrange-start" value="192.168.1.10">
+            </div>
+            <div class="field">
+              <label class="field-label">End IP</label>
+              <input type="text" class="input" id="cidrange-end" value="192.168.1.50">
+            </div>
+            <button class="btn" type="submit" id="cidrange-r2c-btn">Convert</button>
+          </div>
+          </form>
+        </div>
+
+        <div id="cidrange-c2r" style="display:none;">
+          <form class="calc-form" id="cidrange-c2r-form">
+          <div class="input-group">
+            <div class="field">
+              <label class="field-label">CIDR</label>
+              <input type="text" class="input" id="cidrange-cidr" value="192.168.1.0/26">
+            </div>
+            <button class="btn" type="submit" id="cidrange-c2r-btn">Convert</button>
+          </div>
+          </form>
+        </div>
+
+        <div class="error-message" id="cidrange-error"></div>
+        <div id="cidrange-output" style="margin-top: 20px;"></div>
+
+        <div class="reference-block">
+          <div class="reference-block-title">Reference</div>
+          <div class="reference-block-text">
+            An arbitrary IP range (S - E) generally <strong>does not fit a single CIDR</strong>;
+            it must be split into multiple blocks. Algorithm: at each step, starting from the current
+            <code>S</code>, pick the largest valid block size (bounded by <code>S</code>'s alignment
+            and the distance to <code>E</code>), then advance <code>S += block_size</code>.
+            Critical for minimizing entries in firewall rules, route filters and ACLs.
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== PING SWEEP ========== -->
+      <section class="tab-panel" id="tab-pingsweep">
+        <div class="panel-header">
+          <div class="panel-title">Ping Sweep List Generator</div>
+          <div class="panel-subtitle">Generate all host IPs from CIDR as a script-friendly list. For nmap, fping, bash for-loops.</div>
+        </div>
+
+        <form class="calc-form" id="ps-form">
+        <div class="input-group">
+          <div class="field">
+            <label class="field-label">Network (CIDR)</label>
+            <input type="text" class="input" id="ps-network" value="192.168.1.0/29">
+          </div>
+          <div class="field">
+            <label class="field-label">Format</label>
+            <select class="input" id="ps-format">
+              <option value="newline">Newline (one IP per line)</option>
+              <option value="comma">Comma-separated</option>
+              <option value="space">Space-separated</option>
+              <option value="bash">Bash for-loop</option>
+              <option value="nmap">nmap target</option>
+              <option value="fping">fping</option>
+            </select>
+          </div>
+          <button class="btn" type="submit" id="ps-gen-btn">Generate</button>
+        </div>
+        </form>
+        <div class="hint">Maximum 4096 IPs. Larger subnets are rejected (split your script).</div>
+        <div class="error-message" id="ps-error"></div>
+        <div id="ps-output" style="margin-top: 20px;"></div>
+
+        <div class="reference-block">
+          <div class="reference-block-title">Reference</div>
+          <div class="reference-block-text">
+            Network and broadcast addresses are excluded (only usable hosts are listed).
+            <code>/31</code> and <code>/32</code> are handled specially.
+            Bash example: <code>for ip in $(...); do ping -c1 -W1 $ip; done</code>.
+            With <strong>nmap</strong> a CIDR can be passed directly (<code>nmap 192.168.1.0/24</code>);
+            this tool is for cases when an explicit per-target list is required.
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== REVERSE DNS / PTR ========== -->
+      <section class="tab-panel" id="tab-ptr">
+        <div class="panel-header">
+          <div class="panel-title">Reverse DNS / PTR Generator</div>
+          <div class="panel-subtitle">From IP to <code>in-addr.arpa</code> (IPv4) or <code>ip6.arpa</code> (IPv6) PTR name.</div>
+        </div>
+
+        <form class="calc-form" id="ptr-form">
+        <div class="input-group">
+          <div class="field">
+            <label class="field-label">IP Address</label>
+            <input type="text" class="input" id="ptr-ip" value="192.168.1.10" style="min-width: 280px;">
+          </div>
+          <button class="btn" type="submit" id="ptr-calc-btn">Generate PTR</button>
+        </div>
+        </form>
+        <div class="hint">IPv4 and IPv6 supported. For bulk: <code>/24</code> CIDR also accepted (max 256 IPs).</div>
+        <div class="error-message" id="ptr-error"></div>
+        <div id="ptr-output" style="margin-top: 20px;"></div>
+
+        <div class="reference-block">
+          <div class="reference-block-title">Reference</div>
+          <div class="reference-block-text">
+            <strong>Reverse DNS (PTR)</strong> resolves an IP back to a hostname. IPv4: octets are
+            reversed and <code>.in-addr.arpa</code> is appended — <code>192.168.1.10</code> →
+            <code>10.1.168.192.in-addr.arpa</code>. IPv6: each hex nibble in reverse order, separated
+            by dots, with <code>.ip6.arpa</code> appended. Used to define reverse zones in DNS server
+            configuration. <strong>SMTP</strong> servers commonly require a valid PTR record for mail acceptance.
+          </div>
+          <div class="reference-links">
+            <a class="reference-link" href="https://datatracker.ietf.org/doc/html/rfc1035" target="_blank" rel="noopener">RFC 1035 <span class="tag">DNS</span></a>
+            <a class="reference-link" href="https://datatracker.ietf.org/doc/html/rfc3596" target="_blank" rel="noopener">RFC 3596 <span class="tag">IPv6 DNS</span></a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== REFERENCES ========== -->
+      <section class="tab-panel" id="tab-references">
+        <div class="panel-header">
+          <div class="panel-title">References &amp; Cheatsheet</div>
+          <div class="panel-subtitle">Quick reference for network engineering concepts. Use while studying CCNA/CCNP.</div>
+        </div>
+
+        <h3 class="ref-section-title">IPv4 Fundamentals</h3>
+        <div class="ref-grid">
+
+          <div class="ref-card">
+            <div class="ref-card-header">
+              <span class="ref-badge">RFC 791</span>
+              <span class="ref-card-title">IPv4 Address Structure</span>
+            </div>
+            <div class="ref-card-body">
+              32-bit address, 4 octets × 8 bits. <code>X.X.X.X</code> dotted decimal notation.
+              Address space ~4.3 billion (2³²). Network and Host portions separated by the subnet mask.
+            </div>
+            <div class="ref-card-footer">
+              <a href="https://datatracker.ietf.org/doc/html/rfc791" target="_blank" rel="noopener" class="ref-card-link">RFC 791 ↗</a>
+            </div>
+          </div>
+
+          <div class="ref-card">
+            <div class="ref-card-header">
+              <span class="ref-badge">RFC 1918</span>
+              <span class="ref-card-title">Private Address Ranges</span>
+            </div>
+            <div class="ref-card-body">
+              <code>10.0.0.0/8</code> · <code>172.16.0.0/12</code> · <code>192.168.0.0/16</code>.
+              Not routable on the public Internet; used behind NAT.
+            </div>
+            <div class="ref-card-footer">
+              <a href="https://datatracker.ietf.org/doc/html/rfc1918" target="_blank" rel="noopener" class="ref-card-link">RFC 1918 ↗</a>
+            </div>
+          </div>
+
+          <div class="ref-card">
+            <div class="ref-card-header">
+              <span class="ref-badge">RFC 6598</span>
+              <span class="ref-card-title">CGNAT (Carrier-Grade NAT)</span>
+            </div>
+            <div class="ref-card-body">
+              <code>100.64.0.0/10</code> — shared address space allocated by ISPs to subscribers behind NAT.
+              Kept distinct from RFC 1918 to avoid customer-side conflicts.
+            </div>
+            <div class="ref-card-footer">
+              <a href="https://datatracker.ietf.org/doc/html/rfc6598" target="_blank" rel="noopener" class="ref-card-link">RFC 6598 ↗</a>
+            </div>
+          </div>
+
+          <div class="ref-card">
+            <div class="ref-card-header">
+              <span class="ref-badge">RFC 3927</span>
+              <span class="ref-card-title">Link-local (APIPA)</span>
+            </div>
+            <div class="ref-card-body">
+              <code>169.254.0.0/16</code> — auto-assigned when DHCP fails.
+              Valid only within the same broadcast domain.
+            </div>
+            <div class="ref-card-footer">
+              <a href="https://datatracker.ietf.org/doc/html/rfc3927" target="_blank" rel="noopener" class="ref-card-link">RFC 3927 ↗</a>
+            </div>
+          </div>
+
+          <div class="ref-card">
+            <div class="ref-card-header">
+              <span class="ref-badge">RFC 3021</span>
+              <span class="ref-card-title">/31 Point-to-Point</span>
+            </div>
+            <div class="ref-card-body">
+              In normal subnets the network and broadcast addresses are reserved, but on a <code>/31</code>
+              both addresses are usable hosts. Saves addresses on router-to-router links.
+            </div>
+            <div class="ref-card-footer">
+              <a href="https://datatracker.ietf.org/doc/html/rfc3021" target="_blank" rel="noopener" class="ref-card-link">RFC 3021 ↗</a>
+            </div>
+          </div>
+
+          <div class="ref-card">
+            <div class="ref-card-header">
+              <span class="ref-badge">CIDR</span>
+              <span class="ref-card-title">Classless Inter-Domain Routing</span>
+            </div>
+            <div class="ref-card-body">
+              Replaces fixed Class A/B/C boundaries with arbitrary prefix lengths.
+              Anywhere from <code>10.0.0.0/8</code> down to <code>192.168.1.0/30</code>.
+              Enables VLSM and route summarization.
+            </div>
+            <div class="ref-card-footer">
+              <a href="https://datatracker.ietf.org/doc/html/rfc4632" target="_blank" rel="noopener" class="ref-card-link">RFC 4632 ↗</a>
+            </div>
+          </div>
+
+        </div>
+
+        <h3 class="ref-section-title">Subnetting Techniques</h3>
+        <div class="ref-grid">
+
+          <div class="ref-card">
+            <div class="ref-card-header">
+              <span class="ref-badge">VLSM</span>
+              <span class="ref-card-title">Variable Length Subnet Masking</span>
+            </div>
+            <div class="ref-card-body">
+              <strong>Different-sized</strong> subnets within the same parent network.
+              Prefix length varies by host requirement; uses address space efficiently.
+              Modern routing protocols (OSPF, EIGRP, IS-IS, BGP) all support it.
+            </div>
+            <div class="ref-card-footer">
+              <a href="https://datatracker.ietf.org/doc/html/rfc1878" target="_blank" rel="noopener" class="ref-card-link">RFC 1878 ↗</a>
+            </div>
+          </div>
+
+          <div class="ref-card">
+            <div class="ref-card-header">
+              <span class="ref-badge">FLSM</span>
+              <span class="ref-card-title">Fixed Length Subnet Masking</span>
+            </div>
+            <div class="ref-card-body">
+              All subnets are <strong>the same size</strong>. Simple to compute but wastes addresses.
+              The <strong>Split Subnet</strong> tool implements this approach.
+            </div>
+            <div class="ref-card-footer">
+              <a href="https://datatracker.ietf.org/doc/html/rfc950" target="_blank" rel="noopener" class="ref-card-link">RFC 950 ↗</a>
+            </div>
+          </div>
+
+          <div class="ref-card">
+            <div class="ref-card-header">
+              <span class="ref-badge">Summary</span>
+              <span class="ref-card-title">Route Summarization</span>
+            </div>
+            <div class="ref-card-body">
+              Represent contiguous networks as a single summary route.
+              Reduces routing-table size and protocol churn.
+              In EIGRP <code>ip summary-address</code>, in OSPF <code>area range</code>,
+              in BGP <code>aggregate-address</code>.
+            </div>
+            <div class="ref-card-footer">
+              <a href="https://datatracker.ietf.org/doc/html/rfc1519" target="_blank" rel="noopener" class="ref-card-link">RFC 1519 ↗</a>
+            </div>
+          </div>
+
+          <div class="ref-card">
+            <div class="ref-card-header">
+              <span class="ref-badge">Mask</span>
+              <span class="ref-card-title">Subnet vs Wildcard Mask</span>
+            </div>
+            <div class="ref-card-body">
+              Subnet mask: <code>1</code>=network bit, <code>0</code>=host bit.
+              Wildcard mask: the <strong>inverse</strong> — used in ACLs and OSPF.
+              <code>/24</code> → <code>255.255.255.0</code> mask → <code>0.0.0.255</code> wildcard.
+            </div>
+            <div class="ref-card-footer">
+              <a href="https://www.cisco.com/c/en/us/support/docs/security/ios-firewall/23602-confaccesslists.html" target="_blank" rel="noopener" class="ref-card-link">Cisco ACL Doc ↗</a>
+            </div>
+          </div>
+
+        </div>
+
+        <h3 class="ref-section-title">IPv6 Essentials</h3>
+        <div class="ref-grid">
+
+          <div class="ref-card">
+            <div class="ref-card-header">
+              <span class="ref-badge">RFC 4291</span>
+              <span class="ref-card-title">IPv6 Addressing Architecture</span>
+            </div>
+            <div class="ref-card-body">
+              128 bits, 8 groups × 16 bits, hexadecimal notation. Standard prefix lengths:
+              <code>/48</code> (site), <code>/64</code> (subnet), <code>/128</code> (host).
+              No broadcast — multicast &amp; anycast instead.
+            </div>
+            <div class="ref-card-footer">
+              <a href="https://datatracker.ietf.org/doc/html/rfc4291" target="_blank" rel="noopener" class="ref-card-link">RFC 4291 ↗</a>
+            </div>
+          </div>
+
+          <div class="ref-card">
+            <div class="ref-card-header">
+              <span class="ref-badge">RFC 5952</span>
+              <span class="ref-card-title">Canonical Text Representation</span>
+            </div>
+            <div class="ref-card-body">
+              Compression rules: longest run of zero groups becomes <code>::</code>,
+              leading zeros within groups dropped, lowercase hex preferred.
+              <code>2001:0db8:0000:0000:0000:0000:0000:0001</code> → <code>2001:db8::1</code>.
+            </div>
+            <div class="ref-card-footer">
+              <a href="https://datatracker.ietf.org/doc/html/rfc5952" target="_blank" rel="noopener" class="ref-card-link">RFC 5952 ↗</a>
+            </div>
+          </div>
+
+          <div class="ref-card">
+            <div class="ref-card-header">
+              <span class="ref-badge">Scope</span>
+              <span class="ref-card-title">IPv6 Address Scopes</span>
+            </div>
+            <div class="ref-card-body">
+              <strong>GUA</strong> <code>2000::/3</code> · <strong>ULA</strong> <code>fc00::/7</code> ·
+              <strong>Link-local</strong> <code>fe80::/10</code> ·
+              <strong>Multicast</strong> <code>ff00::/8</code> ·
+              <strong>Doc</strong> <code>2001:db8::/32</code>.
+            </div>
+            <div class="ref-card-footer">
+              <a href="https://datatracker.ietf.org/doc/html/rfc4193" target="_blank" rel="noopener" class="ref-card-link">RFC 4193 ↗</a>
+            </div>
+          </div>
+
+        </div>
+
+        <h3 class="ref-section-title">Wireless &amp; DHCP</h3>
+        <div class="ref-grid">
+
+          <div class="ref-card">
+            <div class="ref-card-header">
+              <span class="ref-badge">RFC 2132</span>
+              <span class="ref-card-title">DHCP Vendor-Specific Options</span>
+            </div>
+            <div class="ref-card-body">
+              Option 43 carries vendor-specific information. For APs it carries WLC IPs as a TLV blob.
+              Often used together with Option 60 (Vendor Class Identifier) so the DHCP server
+              can recognize the device and send the correct Option 43.
+            </div>
+            <div class="ref-card-footer">
+              <a href="https://datatracker.ietf.org/doc/html/rfc2132" target="_blank" rel="noopener" class="ref-card-link">RFC 2132 ↗</a>
+            </div>
+          </div>
+
+          <div class="ref-card">
+            <div class="ref-card-header">
+              <span class="ref-badge">Cisco</span>
+              <span class="ref-card-title">WLC Discovery Methods</span>
+            </div>
+            <div class="ref-card-body">
+              An AP looks for its WLC in this order: 1) static config, 2) DHCP Option 43,
+              3) DNS (<code>CISCO-CAPWAP-CONTROLLER.&lt;domain&gt;</code>), 4) broadcast.
+              Option 43 is the most common method, especially across subnets.
+            </div>
+            <div class="ref-card-footer">
+              <a href="https://www.cisco.com/c/en/us/support/docs/wireless-mobility/wireless-lan-wlan/97066-dhcp-option-43-00.html" target="_blank" rel="noopener" class="ref-card-link">Cisco Doc 97066 ↗</a>
+            </div>
+          </div>
+
+          <div class="ref-card">
+            <div class="ref-card-header">
+              <span class="ref-badge">CAPWAP</span>
+              <span class="ref-card-title">AP-WLC Protocol</span>
+            </div>
+            <div class="ref-card-body">
+              <strong>Control And Provisioning of Wireless Access Points</strong>.
+              UDP 5246 (control) + 5247 (data). Successor to LWAPP.
+              AP join lifecycle: discovery → join → config → run state.
+            </div>
+            <div class="ref-card-footer">
+              <a href="https://datatracker.ietf.org/doc/html/rfc5415" target="_blank" rel="noopener" class="ref-card-link">RFC 5415 ↗</a>
+            </div>
+          </div>
+
+        </div>
+
+        <h3 class="ref-section-title">Routing Protocols (CCNA/CCNP)</h3>
+        <div class="ref-grid">
+
+          <div class="ref-card">
+            <div class="ref-card-header">
+              <span class="ref-badge">RFC 2328</span>
+              <span class="ref-card-title">OSPFv2</span>
+            </div>
+            <div class="ref-card-body">
+              Link-state protocol using Dijkstra SPF. Hierarchical area design.
+              The <code>network</code> statement uses a <strong>wildcard mask</strong>.
+              Backbone area <code>0</code> is mandatory.
+            </div>
+            <div class="ref-card-footer">
+              <a href="https://datatracker.ietf.org/doc/html/rfc2328" target="_blank" rel="noopener" class="ref-card-link">RFC 2328 ↗</a>
+            </div>
+          </div>
+
+          <div class="ref-card">
+            <div class="ref-card-header">
+              <span class="ref-badge">RFC 7868</span>
+              <span class="ref-card-title">EIGRP</span>
+            </div>
+            <div class="ref-card-body">
+              Enhanced IGRP — Cisco's advanced distance-vector protocol with the DUAL algorithm.
+              Composite metric (bandwidth + delay), with feasible successors enabling fast convergence.
+              The <code>network</code> statement uses a wildcard mask.
+            </div>
+            <div class="ref-card-footer">
+              <a href="https://datatracker.ietf.org/doc/html/rfc7868" target="_blank" rel="noopener" class="ref-card-link">RFC 7868 ↗</a>
+            </div>
+          </div>
+
+          <div class="ref-card">
+            <div class="ref-card-header">
+              <span class="ref-badge">RFC 4271</span>
+              <span class="ref-card-title">BGP-4</span>
+            </div>
+            <div class="ref-card-body">
+              Path-vector, AS-level routing — the backbone of the Internet.
+              TCP 179, manual peering.
+              Route summarization via <code>aggregate-address</code>.
+            </div>
+            <div class="ref-card-footer">
+              <a href="https://datatracker.ietf.org/doc/html/rfc4271" target="_blank" rel="noopener" class="ref-card-link">RFC 4271 ↗</a>
+            </div>
+          </div>
+
+        </div>
+
+        <h3 class="ref-section-title">CIDR Quick Reference</h3>
+        <div class="ref-cheatsheet">
+          <div style="overflow-x: auto;">
+          <table class="results-table" style="margin: 0;">
+            <thead>
+              <tr><th>CIDR</th><th>Mask</th><th>Wildcard</th><th>Total</th><th>Hosts</th><th>Class</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>/8</code></td><td>255.0.0.0</td><td>0.255.255.255</td><td>16,777,216</td><td>16,777,214</td><td>A</td></tr>
+              <tr><td><code>/16</code></td><td>255.255.0.0</td><td>0.0.255.255</td><td>65,536</td><td>65,534</td><td>B</td></tr>
+              <tr><td><code>/20</code></td><td>255.255.240.0</td><td>0.0.15.255</td><td>4,096</td><td>4,094</td><td>—</td></tr>
+              <tr><td><code>/22</code></td><td>255.255.252.0</td><td>0.0.3.255</td><td>1,024</td><td>1,022</td><td>—</td></tr>
+              <tr><td><code>/23</code></td><td>255.255.254.0</td><td>0.0.1.255</td><td>512</td><td>510</td><td>—</td></tr>
+              <tr><td><code>/24</code></td><td>255.255.255.0</td><td>0.0.0.255</td><td>256</td><td>254</td><td>C</td></tr>
+              <tr><td><code>/25</code></td><td>255.255.255.128</td><td>0.0.0.127</td><td>128</td><td>126</td><td>—</td></tr>
+              <tr><td><code>/26</code></td><td>255.255.255.192</td><td>0.0.0.63</td><td>64</td><td>62</td><td>—</td></tr>
+              <tr><td><code>/27</code></td><td>255.255.255.224</td><td>0.0.0.31</td><td>32</td><td>30</td><td>—</td></tr>
+              <tr><td><code>/28</code></td><td>255.255.255.240</td><td>0.0.0.15</td><td>16</td><td>14</td><td>—</td></tr>
+              <tr><td><code>/29</code></td><td>255.255.255.248</td><td>0.0.0.7</td><td>8</td><td>6</td><td>—</td></tr>
+              <tr><td><code>/30</code></td><td>255.255.255.252</td><td>0.0.0.3</td><td>4</td><td>2</td><td>P2P</td></tr>
+              <tr><td><code>/31</code></td><td>255.255.255.254</td><td>0.0.0.1</td><td>2</td><td>2*</td><td>P2P</td></tr>
+              <tr><td><code>/32</code></td><td>255.255.255.255</td><td>0.0.0.0</td><td>1</td><td>1</td><td>Host</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="hint" style="margin-top: 8px;">* RFC 3021: on a <code>/31</code> P2P link both addresses are usable as hosts.</div>
+        </div>
+
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="footer">
+    <span class="footer-brand">NetCalc Pro · Built for network engineers</span>
+    <span class="footer-links">
+      <a href="https://kaktusdev.net" target="_blank" rel="noopener noreferrer" class="footer-link" title="Visit kaktusdev.net">
+        <svg class="footer-icon" viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+        </svg>
+        <span>kaktusdev.net</span>
+      </a>
+      <span class="footer-divider">·</span>
+      <a href="https://github.com/yfthcn" target="_blank" rel="noopener noreferrer" class="footer-link" title="GitHub @yfthcn">
+        <svg class="footer-icon" viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true">
+          <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+        </svg>
+        <span>github.com/yfthcn</span>
+      </a>
+    </span>
+  </footer>
+
+  <!-- ==================== SCRIPTS ==================== -->
+  <script src="js/ipv4.js"></script>
+  <script src="js/ipv6.js"></script>
+  <script src="js/option43.js"></script>
+  <script src="js/overlap.js"></script>
+  <script src="js/numbase.js"></script>
+  <script src="js/calculators.js"></script>
+  <script src="js/ui-helpers.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

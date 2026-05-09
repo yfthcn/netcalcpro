@@ -1,0 +1,42 @@
+name: Deploy to GitHub Pages
+
+on:
+  # Her main push'unda tetiklenir
+  push:
+    branches: [main]
+  # Manuel tetikleme (Actions tab → Run workflow)
+  workflow_dispatch:
+
+# Pages için gerekli permissions
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Aynı anda sadece bir deploy çalışsın
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Tüm repo root'unu yükle (build step yok)
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

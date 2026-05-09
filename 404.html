@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 — NetCalc Pro</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+      text-align: center;
+    }
+    .err-wrap {
+      max-width: 480px;
+      padding: 40px 32px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      position: relative;
+      z-index: 1;
+    }
+    .err-code {
+      font-family: var(--font-mono);
+      font-size: 56px;
+      font-weight: 700;
+      color: var(--cisco-blue);
+      line-height: 1;
+      letter-spacing: 4px;
+      margin-bottom: 8px;
+    }
+    .err-title {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-tertiary);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+    .err-msg {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+    .err-msg code {
+      background: var(--bg-elevated);
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      color: var(--cisco-blue-light);
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+    .err-btn {
+      display: inline-block;
+      padding: 12px 24px;
+      background: var(--cisco-blue);
+      color: white;
+      text-decoration: none;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: all 0.18s ease;
+    }
+    .err-btn:hover {
+      background: var(--cisco-blue-light);
+      box-shadow: 0 0 12px var(--cisco-blue-glow);
+      transform: translateY(-1px);
+    }
+    .err-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 20px;
+      border: 2px solid var(--cisco-blue);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 28px;
+      color: var(--cisco-blue);
+      background: var(--cisco-blue-glow);
+    }
+  </style>
+</head>
+<body>
+  <div class="err-wrap">
+    <div class="err-icon">⚠</div>
+    <div class="err-code">404</div>
+    <div class="err-title">Subnet not found</div>
+    <p class="err-msg">
+      The route you requested isn't in this routing table. Maybe the resource was moved,
+      or maybe the <code>broadcast address</code> swallowed it.
+    </p>
+    <a href="./" class="err-btn">→ Return to NetCalc</a>
+  </div>
+</body>
+</html>
