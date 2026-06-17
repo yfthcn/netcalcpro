@@ -8,6 +8,7 @@
 ![Vanilla JS](https://img.shields.io/badge/vanilla-JS-F7DF1E)
 ![Zero Dependencies](https://img.shields.io/badge/dependencies-0-success)
 ![Mobile](https://img.shields.io/badge/mobile-responsive-blue)
+![Tests](https://github.com/yfthcn/netcalcpro/actions/workflows/ci.yml/badge.svg)
 ![License](https://img.shields.io/badge/license-MIT-lightgrey)
 
 ---
@@ -171,6 +172,18 @@ Tested on:
 - ✅ Chrome Mobile (Android 12+)
 
 Uses native `BigInt`, CSS Grid, CSS Custom Properties, `URLSearchParams`. No polyfills required.
+
+---
+
+## Tests
+
+The core network math is covered by a **zero-dependency** test suite (no test framework — same philosophy as the app). The browser modules are loaded into Node via a small harness and checked against known values: subnet/VLSM/supernet math, IPv6 expand/compress (RFC 5952), DHCP Option 43 TLV generate↔decode round-trips (incl. Wi-Fi 7 FOM), the classic EIGRP 10 Mbps metric (`281600`), OSPF cost, range↔CIDR, ping-sweep and PTR generation.
+
+```bash
+node test/run.js      # → "✓ All N tests passed."  (exit 0 / 1)
+```
+
+Every push and pull request runs this suite via GitHub Actions (`tests` badge above). A single wrong result fails the build.
 
 ---
 
